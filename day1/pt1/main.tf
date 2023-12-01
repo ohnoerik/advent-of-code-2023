@@ -1,7 +1,7 @@
 locals {
 
   // Read input file, split into lines
-  input_data = split("\n", chomp(file("./input_real.txt")))
+  input_data = split("\n", chomp(file(var.input_file)))
 
   // Get all digits in each line
   lines_digits = [ for line in local.input_data : flatten(regexall("(\\d)", line)) ]

@@ -23,7 +23,7 @@ locals {
   }
 
   // Read input file, split into lines
-  input_data = split("\n", chomp(file("./input_dl")))
+  input_data = split("\n", chomp(file(var.input_file)))
 
   // Grab the first number we find in a line, whether it's a digit or string 
   lines_digits_start = [ for line in local.input_data : element(flatten(regexall("(three|seven|eight|four|five|nine|one|two|six|\\d)", line)), 0) ]
