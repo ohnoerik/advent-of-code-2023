@@ -1,0 +1,67 @@
+name: Run AoC Tests
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      tfjobs: ${{ steps.set-matrix.outputs.matrix }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.1.1
+        with:
+          fetch-depth: 0
+
+      - name: Determine Changed Directories
+        id: set-matrix
+        run: |
+          CHANGED_DIRS=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep '^day[0-9]\+/pt[0-9]\+' | cut -f1,2 -d'/' | sort | uniq)
+          TF_DIRS=""
+          for dir in $CHANGED_DIRS; do
+            if [ -f "$dir/test.tfvars" ]; then
+              TF_DIRS="$TF_DIRS $dir"
+            fi
+          done
+
+          echo "Terraform projects with changes: $TF_DIRS"
+          if [ -z "$TF_DIRS" ]; then
+            echo "tfjobs=[]" >> $GITHUB_OUTPUT
+          else
+            DIR_JSON=$(echo $TF_DIRS | tr ' ' '\n' | jq -R -s -c 'split("\n")[:-1]')
+            echo "tfjobs=$DIR_JSON" >> $GITHUB_OUTPUT
+          fi
+
+  terraform:
+    needs: prepare
+    runs-on: ubuntu-latest
+    if: fromJson(needs.prepare.outputs.tfjobs)[0] != null  # ensures at least 1 tf job applies
+    strategy:
+      matrix:
+        folder: ${{fromJson(needs.prepare.outputs.tfjobs)}}
+    name: Run Terraform - ${{ matrix.folder }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4.1.1
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2.0.3
+
+      - name: Terraform Init and Plan
+        run: |
+          cd ${{ matrix.folder }}
+          terraform init
+          terraform plan -var-file=test.tfvars -out=tfplan
+      - name: Terraform Apply
+        run: |
+          cd ${{ matrix.folder }}
+          terraform apply -auto-approve tfplan
+      - name: Show solution
+        run: cd ${{ matrix.folder }} && terraform output solution
+

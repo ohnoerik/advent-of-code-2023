@@ -1,6 +1,7 @@
 
 locals {
-  // read data
+
+  // Read data
   input_data = split("\n", chomp(file(var.input_file)))
 
   // Get the column containing "Game #"
@@ -40,7 +41,7 @@ resource "null_resource" "game_color_maxes" {
 }
 
 locals {
- 
+
   // We already have the max values for each color... the max values for each color
   // just happens to be the minimum number of cubes we need ;)
   // So multiply them all together for the cube power number we need
@@ -51,6 +52,7 @@ locals {
 
   // Add up the cube powers for all games to get the solution
   cube_power_sum = sum(local.cube_power)
+
 }
 
 output "solution" {

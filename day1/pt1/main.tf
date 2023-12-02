@@ -1,3 +1,4 @@
+
 locals {
 
   // Read input file, split into lines
@@ -17,7 +18,6 @@ locals {
 // Combine the first and last digit together as a string
 resource "null_resource" "combined_number" {
   count = length(local.lines_digits)
-
   triggers = {
     number = join("", [
     	element(local.lines_first_digits, count.index),

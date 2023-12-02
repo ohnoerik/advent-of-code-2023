@@ -1,6 +1,6 @@
 
 locals {
-  // read data
+  // Read data
   input_data = split("\n", chomp(file(var.input_file)))
 
   // Get the column containing "Game #"
@@ -41,7 +41,7 @@ resource "null_resource" "game_color_maxes" {
 
 locals {
   // Filter out games. Each color for each game should be no more than
-  // the maximum number of color cubes given as input.
+  //   the maximum number of color cubes given as input.
   // Only save the game ID numbers that are valid.
   eligible_red_games = [ for g in null_resource.game_color_maxes : g.triggers.game_id if tonumber(g.triggers.max_red) <= var.target_red ]
   eligible_green_games = [ for g in null_resource.game_color_maxes : g.triggers.game_id if tonumber(g.triggers.max_green) <= var.target_green ]
@@ -50,7 +50,7 @@ locals {
   // Finding the intersection of all game IDs will be the games that match all criteria
   eligible_games = setintersection(local.eligible_red_games, local.eligible_green_games, local.eligible_blue_games)
 
-  // get sum of eligible games for solution
+  // Get sum of eligible games for solution
   eligible_games_sum = sum(local.eligible_games)
 }
 
