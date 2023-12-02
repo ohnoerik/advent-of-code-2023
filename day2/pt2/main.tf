@@ -43,7 +43,7 @@ resource "null_resource" "game_color_maxes" {
 locals {
 
   // We already have the max values for each color... the max values for each color
-  // just happens to be the minimum number of cubes we need ;)
+  //   just happens to be the minimum number of cubes we need ;)
   // So multiply them all together for the cube power number we need
   cube_power = [ for g in null_resource.game_color_maxes :
       ( tonumber(g.triggers.max_red)
