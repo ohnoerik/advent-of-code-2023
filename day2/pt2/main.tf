@@ -47,7 +47,7 @@ locals {
   cube_power = [ for g in null_resource.game_color_maxes :
       ( tonumber(g.triggers.max_red)
         * tonumber(g.triggers.max_green)
-	* tonumber(g.triggers.max_blue) ]
+	* tonumber(g.triggers.max_blue) ) ]
 
   // Add up the cube powers for all games to get the solution
   cube_power_sum = sum(local.cube_power)
