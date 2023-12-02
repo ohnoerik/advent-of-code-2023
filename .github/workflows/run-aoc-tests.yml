@@ -12,7 +12,7 @@ jobs:
   prepare:
     runs-on: ubuntu-latest
     outputs:
-      tfjobs: ${{ steps.set-matrix.outputs.matrix }}
+      tfjobs: ${{ steps.set-matrix.outputs.tfjobs}}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4.1.1
