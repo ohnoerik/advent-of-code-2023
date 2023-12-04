@@ -1,0 +1,12 @@
+
+In an incredibly cursed abuse of Helm, I present a solution!
+
+This is absolutely gnarly Helm and I'm tired looking at this
+so I'm not even going to bother cleaning this up.
+
+The puzzle presented was:
+{{ .Values.puzzle }}
+
+Get the answer by running:
+  kubectl --namespace {{ .Release.Namespace }} get config-map {{ .Values.output.name }}
+

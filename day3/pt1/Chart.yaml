@@ -1,0 +1,6 @@
+apiVersion: v2
+name: AdventOfCodeSolution
+description: A Helm chart crafted with sweat and tears for Day 3 of 2023's Advent of Code  
+type: application
+version: "3.1"
+appVersion: "1.16.0"
